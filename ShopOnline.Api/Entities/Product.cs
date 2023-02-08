@@ -18,5 +18,7 @@ namespace ShopOnline.Api.Entities
         public int Quantity { get; set; }
 
         public int CategoryId { get; set; }
+
+        public ProductCategory Category { get; set; }
     }
 }
