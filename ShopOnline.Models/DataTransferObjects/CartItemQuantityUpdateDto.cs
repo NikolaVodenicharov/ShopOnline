@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ShopOnline.Models.DataTransferObjects
+﻿namespace ShopOnline.Models.DataTransferObjects
 {
-    internal class CartItemQuantityUpdateDto
+    public class CartItemQuantityUpdateDto
     {
+        public int CartItemId { get; set; }
+        public int Quantity { get; set; }
     }
 }

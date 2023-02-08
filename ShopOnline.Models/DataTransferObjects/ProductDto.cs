@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopOnline.Models.DataTransferObjects
 {
-    internal class ProductDto
-    {
-    }
+    public record ProductDto(
+        int Id, 
+        string Name, 
+        string Description, 
+        string ImageUrl, 
+        decimal Price, 
+        int Quantity, 
+        int CategoryId, 
+        string CategoryName);
 }
