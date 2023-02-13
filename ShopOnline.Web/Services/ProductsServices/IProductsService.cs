@@ -5,5 +5,7 @@ namespace ShopOnline.Web.Services.ProductsServices
     public interface IProductsService
     {
         Task<IEnumerable<ProductDto>> GetProductsAsync();
+
+        Task<ProductDto> GetProductByIdAsync(int id);
     }
 }

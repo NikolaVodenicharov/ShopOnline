@@ -18,9 +18,17 @@ namespace ShopOnline.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
         {
-            var products = await _productRepository.GetProductDtosAsync();
+            var productDtos = await _productRepository.GetProductDtosAsync();
 
-            return Ok(products);
+            return Ok(productDtos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct(int id)
+        {
+            var productDto = await _productRepository.GetProductDtoByIdAsync(id);
+
+            return Ok(productDto);
         }
     }
 }

@@ -18,5 +18,12 @@ namespace ShopOnline.Web.Services.ProductsServices
 
             return products;
         }
+
+        public async Task<ProductDto> GetProductByIdAsync(int id)
+        {
+            var product = await _httpClient.GetFromJsonAsync<ProductDto>($"Products/{id}");
+
+            return product;
+        }
     }
 }

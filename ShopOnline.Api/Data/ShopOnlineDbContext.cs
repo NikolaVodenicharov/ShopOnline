@@ -24,7 +24,6 @@ namespace ShopOnline.Api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Products
-            //Beauty Category
             modelBuilder.Entity<Product>().HasData(new Product
             {
                 Id = 1,
@@ -297,6 +296,7 @@ namespace ShopOnline.Api.Data
                 UserId = 2
 
             });
+
             //Add Product Categories
             modelBuilder.Entity<ProductCategory>().HasData(new ProductCategory
             {

@@ -6,5 +6,7 @@ namespace ShopOnline.Api.Repositories.Interfaces
     public interface IProductRepository
     {
         Task<IEnumerable<ProductDto>> GetProductDtosAsync();
+
+        Task<ProductDto> GetProductDtoByIdAsync(int id);
     }
 }
