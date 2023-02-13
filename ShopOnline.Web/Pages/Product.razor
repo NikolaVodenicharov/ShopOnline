@@ -3,6 +3,8 @@
 
 @if(Products.Count() == 0)
 {
+    <DisplaySpinner/>
+
     <h3>@loadingMessage</h3>
 }
 else
