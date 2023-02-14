@@ -4,8 +4,10 @@ namespace ShopOnline.Web.Services.ShoppingCartsServices
 {
     public interface IShoppingCartsService
     {
-        Task<IEnumerable<CartItemDto>> GetItemsAsync(int userId);
-
         Task<CartItemDto> AddItemAsync(CartItemToAddDto cartItemToAddDto);
+
+        Task<ICollection<CartItemDto>> GetItemsAsync(int userId);
+
+        Task<CartItemDto> DeleteItemAsync(int id);
     }
 }

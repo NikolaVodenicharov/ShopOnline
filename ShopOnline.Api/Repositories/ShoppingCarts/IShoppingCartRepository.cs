@@ -9,10 +9,10 @@ namespace ShopOnline.Api.Repositories.ShoppingCarts
 
         Task<CartItem> UpdateItemAsync(int id, CartItemQuantityUpdateDto cartItemQuantityUpdateDto);
 
-        Task DeleteItemAsync(int id);
-
         Task<CartItem> GetItemAsync(int id);
 
         Task<IEnumerable<CartItemDto>> GetItemsAsync(int userId);
+
+        Task<CartItemDto> DeleteItemAsync(int id);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ShopOnline.Models.DataTransferObjects;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 
 namespace ShopOnline.Web.Services.ShoppingCartsServices
@@ -29,11 +30,29 @@ namespace ShopOnline.Web.Services.ShoppingCartsServices
             return await response.Content.ReadFromJsonAsync<CartItemDto>();
         }
 
-        public async Task<IEnumerable<CartItemDto>> GetItemsAsync(int userId)
+        public async Task<ICollection<CartItemDto>> GetItemsAsync(int userId)
         {
-            var items = await _httpClient.GetFromJsonAsync<IEnumerable<CartItemDto>>($"ShoppingCarts/{userId}/GetItems");
+            var items = await _httpClient.GetFromJsonAsync<ICollection<CartItemDto>>($"ShoppingCarts/{userId}/GetItems");
 
             return items;
+        }
+
+        public async Task<CartItemDto> DeleteItemAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"ShoppingCarts/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return default(CartItemDto);
+            }
+
+            var cartItemDto = await response.Content.ReadFromJsonAsync<CartItemDto>();
+
+            return cartItemDto;
+
+            //var cartItemDto = await _httpClient.DeleteFromJsonAsync<CartItemDto>($"ShoppingCarts/{id}");
+
+            //return cartItemDto;
         }
     }
 }

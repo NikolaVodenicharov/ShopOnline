@@ -37,79 +37,16 @@ namespace ShopOnline.Api.Repositories.ShoppingCarts
                 Quantity = cartItemToAddDto.Quantity
             };
 
-            var result = await _dbContext.CartItems.AddAsync(cartItem);
+            await _dbContext.CartItems.AddAsync(cartItem);
 
             await _dbContext.SaveChangesAsync();
 
-            var product = await _dbContext
-                .Products
-                .FirstOrDefaultAsync(p => p.Id == cartItemToAddDto.ProductId);
-
-            if (product == null)
-            {
-                return null;
-            }
-
-            var cartItemDto = new CartItemDto(
-                result.Entity.Id,
-                result.Entity.CartId,
-                result.Entity.ProductId,
-                product.Name,
-                product.Description,
-                product.ImageUrl,
-                product.Price,
-                product.Price * result.Entity.Quantity,
-                result.Entity.Quantity);
+            var cartItemDto = await GetCartItemDto(cartItem);
 
             return cartItemDto;
         }
 
-        private async Task<bool> CartItemExists(int cartId, int productId)
-        {
-            var exist = await _dbContext
-                .CartItems
-                .AnyAsync(ci =>
-                    ci.CartId == cartId &&
-                    ci.ProductId == productId);
-
-            return exist;
-        }
-
-        private async Task<bool> ProductExist(int productId)
-        {
-            var exist = await _dbContext
-                .Products
-                .AnyAsync(p => p.Id == productId);
-
-            return exist;
-        }
-
-        private async Task<CartItemDto> GetCartItemDto(int id)
-        {
-            var cartItemDto = await
-                (from cart in _dbContext.Carts
-                 join cartItem in _dbContext.CartItems
-                 on cart.Id equals cartItem.CartId
-                 join product in _dbContext.Products
-                 on cartItem.ProductId equals product.Id
-                 where cart.Id == id
-                 select new CartItemDto(
-                     cartItem.Id,
-                     cart.Id,
-                     product.Id,
-                     product.Name,
-                     product.Description,
-                     product.ImageUrl,
-                     product.Price,
-                     product.Price * product.Quantity,
-                     product.Quantity)
-                 )
-                 .FirstOrDefaultAsync();
-
-            return cartItemDto;
-        }
-
-        public Task DeleteItemAsync(int id)
+        public Task<CartItem> UpdateItemAsync(int id, CartItemQuantityUpdateDto cartItemQuantityUpdateDto)
         {
             throw new NotImplementedException();
         }
@@ -132,25 +69,6 @@ namespace ShopOnline.Api.Repositories.ShoppingCarts
 
             return cartItemResult;
         }
-
-        //public async Task<IEnumerable<CartItem>> GetItemsAsync(int userId)
-        //{
-        //    var cartItems = await
-        //        (from cart in _dbContext.Carts
-        //         join cartItem in _dbContext.CartItems
-        //         on cart.Id equals cartItem.CartId
-        //         where cart.UserId == userId
-        //         select new CartItem
-        //         {
-        //             Id = cartItem.Id,
-        //             ProductId= cartItem.ProductId,
-        //             Quantity= cartItem.Quantity,
-        //             CartId= cartItem.CartId,
-        //         })
-        //         .ToListAsync();
-
-        //    return cartItems;
-        //}
 
         public async Task<IEnumerable<CartItemDto>> GetItemsAsync(int userId)
         {
@@ -177,9 +95,92 @@ namespace ShopOnline.Api.Repositories.ShoppingCarts
             return cartItems;
         }
 
-        public Task<CartItem> UpdateItemAsync(int id, CartItemQuantityUpdateDto cartItemQuantityUpdateDto)
+        public async Task<CartItemDto> DeleteItemAsync(int id)
         {
-            throw new NotImplementedException();
+            var cartItem = await _dbContext.CartItems.FindAsync(id);
+
+            if (cartItem == null)
+            {
+                return null;
+            }
+
+            _dbContext.CartItems.Remove(cartItem);
+
+            await _dbContext.SaveChangesAsync();
+
+            var cartItemDto = await GetCartItemDto(cartItem);
+
+            return cartItemDto;
+        }
+
+        private async Task<bool> CartItemExists(int cartId, int productId)
+        {
+            var exist = await _dbContext
+                .CartItems
+                .AnyAsync(ci =>
+                    ci.CartId == cartId &&
+                    ci.ProductId == productId);
+
+            return exist;
+        }
+
+        private async Task<bool> ProductExist(int productId)
+        {
+            var exist = await _dbContext
+                .Products
+                .AnyAsync(p => p.Id == productId);
+
+            return exist;
+        }
+
+        private async Task<CartItemDto> GetCartItemDto(CartItem cartItem)
+        {
+            var product = await _dbContext
+                .Products
+                .FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
+
+            if (product == null)
+            {
+                return null;
+            }
+
+            var cartItemDto = new CartItemDto(
+                cartItem.Id,
+                cartItem.CartId,
+                cartItem.ProductId,
+                product.Name,
+                product.Description,
+                product.ImageUrl,
+                product.Price,
+                product.Price * cartItem.Quantity,
+                cartItem.Quantity);
+
+            return cartItemDto;
+        }
+
+        private async Task<CartItemDto> GetCartItemDto(int id)
+        {
+            var cartItemDto = await
+                (from cart in _dbContext.Carts
+                 join cartItem in _dbContext.CartItems
+                 on cart.Id equals cartItem.CartId
+                 join product in _dbContext.Products
+                 on cartItem.ProductId equals product.Id
+                 where cart.Id == id
+                 select new CartItemDto(
+                     cartItem.Id,
+                     cart.Id,
+                     product.Id,
+                     product.Name,
+                     product.Description,
+                     product.ImageUrl,
+                     product.Price,
+                     product.Price * product.Quantity,
+                     product.Quantity)
+                 )
+                 .FirstOrDefaultAsync();
+
+            return cartItemDto;
         }
     }
 }

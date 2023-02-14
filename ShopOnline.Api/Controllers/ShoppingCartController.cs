@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShopOnline.Api.Repositories.Products;
 using ShopOnline.Api.Repositories.ShoppingCarts;
 using ShopOnline.Models.DataTransferObjects;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ShopOnline.Api.Controllers
 {
@@ -41,6 +42,14 @@ namespace ShopOnline.Api.Controllers
             {
                 return NoContent();
             }
+
+            return Ok(cartItemDto);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<CartItemDto>> DeleteItem(int id)
+        {
+            var cartItemDto = await _shoppingCartRepository.DeleteItemAsync(id);
 
             return Ok(cartItemDto);
         }

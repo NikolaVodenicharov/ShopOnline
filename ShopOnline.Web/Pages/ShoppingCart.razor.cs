@@ -9,7 +9,7 @@ namespace ShopOnline.Web.Pages
         [Inject]
         private IShoppingCartsService ShoppingCartsService { get; set; } = default!;
 
-        public IEnumerable<CartItemDto> CartItemDtos { get; set; } = new List<CartItemDto>();
+        public ICollection<CartItemDto> CartItemDtos { get; set; } = new List<CartItemDto>();
 
         public decimal TotalPrice { get; set; }
 
@@ -18,6 +18,15 @@ namespace ShopOnline.Web.Pages
             CartItemDtos = await ShoppingCartsService.GetItemsAsync(HardCoded.UserId);
 
             TotalPrice = CalculateTotalPrice(CartItemDtos);
+        }
+
+        private async Task DeleteCartItem(int id)
+        {
+            await ShoppingCartsService.DeleteItemAsync(id);
+
+            var cartItemDto = CartItemDtos.Single(ci => ci.Id == id);
+
+            CartItemDtos.Remove(cartItemDto);
         }
 
         private decimal CalculateTotalPrice(IEnumerable<CartItemDto> CartItemDtos)

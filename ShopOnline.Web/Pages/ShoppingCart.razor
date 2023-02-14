@@ -1,6 +1,12 @@
 ﻿@page "/ShoppingCart"
 
 <h3 class="mb-5">Shopping Cart</h3>
+
+@if(CartItemDtos.Count == 0)
+{
+    <h4>There are currently no items in your shopping cart.</h4>
+}
+
 <div class="row mb-5">
     <div class="col-md-9">
         @foreach (var cartItemDto in CartItemDtos)
@@ -13,6 +19,9 @@
                     <h5>@cartItemDto.ProductName</h5>
                     <div class="mb-4">@cartItemDto.ProductDescription</div>
                     <span>Price: <b>@cartItemDto.Price.ToString("C")</b></span>
+                    <div>
+                        <button @onclick="(() => DeleteCartItem(cartItemDto.Id))" class="btn btn-danger small">Remove</button>
+                    </div>
                 </div>
             </div>
         }
@@ -21,7 +30,7 @@
     <div class="col-md-3">
         <h5>Cart Summary</h5>
         <div class="mt-2">
-            <div class="mb-4">Total - @TotalPrice.ToString("C")</div>
+            <div class="mb-4">Total: @TotalPrice.ToString("C")</div>
             <a href="#" class="btn btn-success">
                 <span class="oi oi-credit-card"></span>&nbsp; Proceed to Checkout
             </a>
