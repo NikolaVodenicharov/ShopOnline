@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShopOnline.Api.Repositories.Interfaces;
+using ShopOnline.Api.Repositories.Products;
 using ShopOnline.Models.DataTransferObjects;
 
 namespace ShopOnline.Api.Controllers

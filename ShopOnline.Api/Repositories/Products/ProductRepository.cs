@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopOnline.Api.Data;
 using ShopOnline.Api.Entities;
-using ShopOnline.Api.Repositories.Interfaces;
 using ShopOnline.Models.DataTransferObjects;
 
-namespace ShopOnline.Api.Repositories.Implementations
+namespace ShopOnline.Api.Repositories.Products
 {
     public class ProductRepository : IProductRepository
     {

@@ -1,7 +1,7 @@
 ﻿using ShopOnline.Api.Entities;
 using ShopOnline.Models.DataTransferObjects;
 
-namespace ShopOnline.Api.Repositories.Interfaces
+namespace ShopOnline.Api.Repositories.Products
 {
     public interface IProductRepository
     {
