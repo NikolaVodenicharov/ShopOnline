@@ -19,6 +19,19 @@ namespace ShopOnline.Api.Controllers
             _shoppingCartRepository = shoppingCartRepository;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<CartItemDto>> PostItem([FromBody] CartItemToAddDto cartItemToAddDto)
+        {
+            var cartItemDto = await _shoppingCartRepository.AddItemAsync(cartItemToAddDto);
+
+            if (cartItemDto == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(cartItemDto);
+        }
+
         [HttpGet("{userId}/GetItems")]
         public async Task<ActionResult<IEnumerable<CartItemDto>>> GetItems(int userId)
         {
@@ -27,24 +40,22 @@ namespace ShopOnline.Api.Controllers
             return Ok(cartItemDtos);
         }
 
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<CartItemDto>> UpdateQuantity(int id, CartItemQuantityUpdateDto cartItemQuantityUpdateDto)
+        {
+            var cartItemDto = await _shoppingCartRepository.UpdateItemQuantityAsync(id, cartItemQuantityUpdateDto);
+
+            return Ok(cartItemDto);
+        }
+
         //[HttpGet("{id}:int")]
         //public async Task<ActionResult<CartItemDto>> GetItem(int id)
         //{
 
         //}
 
-        [HttpPost]
-        public async Task<ActionResult<CartItemDto>> PostItem([FromBody] CartItemToAddDto cartItemToAddDto)
-        {
-            var cartItemDto = await _shoppingCartRepository.AddItemAsync(cartItemToAddDto);
 
-            if(cartItemDto == null)
-            {
-                return NoContent();
-            }
 
-            return Ok(cartItemDto);
-        }
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<CartItemDto>> DeleteItem(int id)

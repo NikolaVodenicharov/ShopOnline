@@ -17,7 +17,21 @@ namespace ShopOnline.Web.Pages
         {
             CartItemDtos = await ShoppingCartsService.GetItemsAsync(HardCoded.UserId);
 
-            TotalPrice = CalculateTotalPrice(CartItemDtos);
+            CalculateTotalPrice();
+        }
+
+        private async Task UpdateCartItemQuantity(int id, int quantity)
+        {
+            if (quantity > 0)
+            {
+                var cartItemQuantityUpdateDto = new CartItemQuantityUpdateDto(id, quantity);
+
+                var updatedCartItemDto = await ShoppingCartsService.UpdateQuantity(cartItemQuantityUpdateDto);
+
+                UpdateItemTotalPrice(updatedCartItemDto);
+
+                CalculateTotalPrice();
+            }
         }
 
         private async Task DeleteCartItem(int id)
@@ -27,17 +41,25 @@ namespace ShopOnline.Web.Pages
             var cartItemDto = CartItemDtos.Single(ci => ci.Id == id);
 
             CartItemDtos.Remove(cartItemDto);
+
+            CalculateTotalPrice();
         }
 
-        private decimal CalculateTotalPrice(IEnumerable<CartItemDto> CartItemDtos)
+        private void UpdateItemTotalPrice(CartItemDto cartItemDto)
         {
-            decimal totalPrice = 0;
+            var item = CartItemDtos.FirstOrDefault(ci => ci.Id == cartItemDto.Id);
 
-            foreach (var cartItemDto in CartItemDtos)
+            if (item == null)
             {
-                totalPrice += cartItemDto.Price;
+                return;
             }
-            return totalPrice;
+
+            item.TotalPrice = cartItemDto.Price * cartItemDto.Quantity;
+        }
+
+        private void CalculateTotalPrice()
+        {
+            TotalPrice = CartItemDtos.Sum(p => p.TotalPrice);
         }
     }
 }

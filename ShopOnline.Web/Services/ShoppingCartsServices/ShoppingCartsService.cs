@@ -1,6 +1,9 @@
-﻿using ShopOnline.Models.DataTransferObjects;
+﻿using Newtonsoft.Json;
+using ShopOnline.Models.DataTransferObjects;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ShopOnline.Web.Services.ShoppingCartsServices
 {
@@ -35,6 +38,26 @@ namespace ShopOnline.Web.Services.ShoppingCartsServices
             var items = await _httpClient.GetFromJsonAsync<ICollection<CartItemDto>>($"ShoppingCarts/{userId}/GetItems");
 
             return items;
+        }
+
+        public async Task<CartItemDto> UpdateQuantity(CartItemQuantityUpdateDto cartItemQuantityUpdateDto)
+        {
+            var jsonRequest = JsonConvert.SerializeObject(cartItemQuantityUpdateDto);
+            
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+
+            var response = await _httpClient.PatchAsync(
+                $"ShoppingCarts/{cartItemQuantityUpdateDto.CartItemId}",
+                content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var cartItemDto = await response.Content.ReadFromJsonAsync<CartItemDto>();
+
+            return cartItemDto;
         }
 
         public async Task<CartItemDto> DeleteItemAsync(int id)

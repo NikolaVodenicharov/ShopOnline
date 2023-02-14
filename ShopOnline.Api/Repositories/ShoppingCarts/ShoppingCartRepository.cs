@@ -46,11 +46,6 @@ namespace ShopOnline.Api.Repositories.ShoppingCarts
             return cartItemDto;
         }
 
-        public Task<CartItem> UpdateItemAsync(int id, CartItemQuantityUpdateDto cartItemQuantityUpdateDto)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<CartItem> GetItemAsync(int id)
         {
             var cartItemResult = await
@@ -87,12 +82,30 @@ namespace ShopOnline.Api.Repositories.ShoppingCarts
                      product.Description,
                      product.ImageUrl,
                      product.Price,
-                     product.Price * product.Quantity,
-                     product.Quantity)
+                     product.Price * cartItem.Quantity,
+                     cartItem.Quantity)
                  )
                  .ToListAsync();
 
             return cartItems;
+        }
+
+        public async Task<CartItemDto> UpdateItemQuantityAsync(int id, CartItemQuantityUpdateDto cartItemQuantityUpdateDto)
+        {
+            var cartItem = await _dbContext.CartItems.FindAsync(id);
+
+            if (cartItem == null)
+            {
+                return null;
+            }
+
+            cartItem.Quantity = cartItemQuantityUpdateDto.Quantity;
+
+            await _dbContext.SaveChangesAsync();
+
+            var cartItemDto = await GetCartItemDto(cartItem);
+
+            return cartItemDto;
         }
 
         public async Task<CartItemDto> DeleteItemAsync(int id)
