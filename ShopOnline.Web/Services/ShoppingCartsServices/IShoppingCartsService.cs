@@ -4,6 +4,10 @@ namespace ShopOnline.Web.Services.ShoppingCartsServices
 {
     public interface IShoppingCartsService
     {
+        event Action<int> OnShoppingCartChanged;
+
+        void RaiseEventOnShoppingCartChanged(int totalQuantity);
+
         Task<CartItemDto> AddItemAsync(CartItemToAddDto cartItemToAddDto);
 
         Task<ICollection<CartItemDto>> GetItemsAsync(int userId);

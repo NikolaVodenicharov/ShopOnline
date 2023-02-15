@@ -11,6 +11,8 @@ namespace ShopOnline.Web.Services.ShoppingCartsServices
     {
         private readonly HttpClient _httpClient;
 
+        public event Action<int> OnShoppingCartChanged;
+
         public ShoppingCartsService(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -76,6 +78,16 @@ namespace ShopOnline.Web.Services.ShoppingCartsServices
             //var cartItemDto = await _httpClient.DeleteFromJsonAsync<CartItemDto>($"ShoppingCarts/{id}");
 
             //return cartItemDto;
+        }
+
+        public void RaiseEventOnShoppingCartChanged(int totalQuantity)
+        {
+            if (OnShoppingCartChanged == null)
+            {
+                return;
+            }
+
+            OnShoppingCartChanged.Invoke(totalQuantity);
         }
     }
 }

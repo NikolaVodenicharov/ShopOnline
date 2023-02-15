@@ -13,14 +13,16 @@ namespace ShopOnline.Web.Pages
 
         public decimal TotalPrice { get; set; }
 
+        public int TotalQuantity { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             CartItemDtos = await ShoppingCartsService.GetItemsAsync(HardCoded.UserId);
 
-            CalculateTotalPrice();
+            CartChanged();
         }
 
-        private async Task UpdateCartItemQuantity(int id, int quantity)
+        public async Task UpdateCartItemQuantity(int id, int quantity)
         {
             if (quantity > 0)
             {
@@ -30,11 +32,11 @@ namespace ShopOnline.Web.Pages
 
                 UpdateItemTotalPrice(updatedCartItemDto);
 
-                CalculateTotalPrice();
+                CartChanged();
             }
         }
 
-        private async Task DeleteCartItem(int id)
+        public async Task DeleteCartItem(int id)
         {
             await ShoppingCartsService.DeleteItemAsync(id);
 
@@ -42,7 +44,7 @@ namespace ShopOnline.Web.Pages
 
             CartItemDtos.Remove(cartItemDto);
 
-            CalculateTotalPrice();
+            CartChanged();
         }
 
         private void UpdateItemTotalPrice(CartItemDto cartItemDto)
@@ -57,9 +59,22 @@ namespace ShopOnline.Web.Pages
             item.TotalPrice = cartItemDto.Price * cartItemDto.Quantity;
         }
 
-        private void CalculateTotalPrice()
+        private void CartChanged()
+        {
+            SetTotalPrice();
+            SetTotalQuantity();
+
+            ShoppingCartsService.RaiseEventOnShoppingCartChanged(TotalQuantity);
+        }
+
+        private void SetTotalPrice()
         {
             TotalPrice = CartItemDtos.Sum(p => p.TotalPrice);
+        }
+
+        private void SetTotalQuantity()
+        {
+            TotalQuantity = CartItemDtos.Sum(i => i.Quantity);
         }
     }
 }
