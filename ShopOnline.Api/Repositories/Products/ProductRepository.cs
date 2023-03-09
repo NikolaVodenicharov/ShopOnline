@@ -52,5 +52,39 @@ namespace ShopOnline.Api.Repositories.Products
 
             return productDtos;
         }
+
+        public async Task<IEnumerable<ProductCategoryDto>> GetProductCategoriesDtosAsync()
+        {
+            var productCategoriesDtos = await
+                (from ProductCategory in _dbContext.ProductCategories
+                 select new ProductCategoryDto(
+                    ProductCategory.Id,
+                    ProductCategory.Name,
+                    ProductCategory.IconCss)
+                 )
+                 .ToListAsync();
+
+            return productCategoriesDtos;
+        }
+
+        public async Task<IEnumerable<ProductDto>> GetProductsDtosByCategoryAsync(int categoryId)
+        {
+            var productDtos = await _dbContext
+                .Products
+                .Where(p => p.CategoryId== categoryId)
+                .Include(p => p.Category)
+                .Select(p => new ProductDto(
+                    p.Id,
+                    p.Name,
+                    p.Description,
+                    p.ImageUrl,
+                    p.Price,
+                    p.Quantity,
+                    p.CategoryId,
+                    p.Category.Name))
+                .ToListAsync();
+
+            return productDtos;
+        }
     }
 }

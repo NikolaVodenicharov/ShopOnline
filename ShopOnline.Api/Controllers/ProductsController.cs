@@ -30,5 +30,21 @@ namespace ShopOnline.Api.Controllers
 
             return Ok(productDto);
         }
+
+        [HttpGet(nameof(GetProductCategories))]
+        public async Task<ActionResult<IEnumerable<ProductCategoryDto>>> GetProductCategories()
+        {
+            var productCategoriesDtos = await _productRepository.GetProductCategoriesDtosAsync();
+
+            return Ok(productCategoriesDtos);
+        }
+
+        [HttpGet("ProductsByCategory/{categoryId}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> ProductsByCategory(int categoryId)
+        {
+            var productDtos = await _productRepository.GetProductsDtosByCategoryAsync(categoryId);
+
+            return Ok(productDtos);
+        }    
     }
 }

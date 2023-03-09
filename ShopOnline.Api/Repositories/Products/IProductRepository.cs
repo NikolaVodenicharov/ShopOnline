@@ -8,5 +8,9 @@ namespace ShopOnline.Api.Repositories.Products
         Task<IEnumerable<ProductDto>> GetProductDtosAsync();
 
         Task<ProductDto> GetProductDtoByIdAsync(int id);
+
+        Task<IEnumerable<ProductCategoryDto>> GetProductCategoriesDtosAsync();
+
+        Task<IEnumerable<ProductDto>> GetProductsDtosByCategoryAsync(int categoryId);
     }
 }

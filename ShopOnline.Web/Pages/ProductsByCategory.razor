@@ -1,0 +1,15 @@
+﻿@page "/ProductsByCategory/{CategoryId:int}"
+
+@if (Products == null)
+{
+    <DisplaySpinner/>
+}
+else
+{
+    <h3>Products (@CategoryName)</h3>
+    
+    @if(Products.Any())
+    {
+        <DisplayProducts Products="@Products"/>
+    }
+}
